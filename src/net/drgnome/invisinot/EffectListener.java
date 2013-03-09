@@ -20,6 +20,8 @@ public class EffectListener extends PacketAdapter
     public static void register()
     {
         HashSet<Integer> set = new HashSet<Integer>();
+        //set.add(Packets.Server.NAMED_ENTITY_SPAWN);
+        //set.add(Packets.Server.MOB_SPAWN);
         set.add(Packets.Server.ENTITY_METADATA);
         ProtocolLibrary.getProtocolManager().addPacketListener(new EffectListener(set));
     }
@@ -36,30 +38,42 @@ public class EffectListener extends PacketAdapter
     
     public void onPacketSending(PacketEvent event)
     {
-        if((event == null) || event.isCancelled() || (event.getPacket() == null) || (event.getPlayer() == null) || (!event.getPlayer().hasPermission("invisinot.see")))
+        if(!event.getPlayer().hasPermission("invisinot.see"))
         {
             return;
         }
         try
         {
             boolean found = false;
-            StructureModifier<Object> mod = event.getPacket().getModifier();
-            for(int i = 0; i < mod.size(); i++)
+            PacketContainer packet = event.getPacket().deepClone();
+            StructureModifier<Object> mod = packet.getModifier();
+            if(mod != null)
             {
-                Object o = mod.readSafely(i);
-                if(o instanceof List)
+                for(int i = 0; i < mod.size(); i++)
                 {
-                    found = true;
-                    for(Object abc : (List)o)
+                    Object o = mod.readSafely(i);
+                    if(o instanceof List)
                     {
-                        WrappedWatchableObject data = new WrappedWatchableObject(abc);
-                        if(data.getIndex() == 0)
+                        found = true;
+                        List list = (List)o;
+                        ArrayList newlist = new ArrayList();
+                        for(int j = 0; j < list.size(); j++)
                         {
-                            data.setValue(Byte.valueOf((byte)(((Byte)data.getValue()).byteValue() & 0xffffffdf)));
+                            WrappedWatchableObject data = new WrappedWatchableObject(list.get(j));
+                            if(data.getIndex() == 0)
+                            {
+                                newlist.add((new WrappedWatchableObject(0, Byte.valueOf((byte)(((Byte)data.getValue()).byteValue() & 0xdf)))).getHandle());
+                            }
+                            else
+                            {
+                                newlist.add(data.getHandle());
+                            }
                         }
+                        mod.writeSafely(i, newlist);
                     }
                 }
             }
+            event.setPacket(packet);
             if(found)
             {
                 return;
