@@ -16,7 +16,6 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
     private static final String _version = "1.0.0";
     
     private boolean _update = false;
-    private int _upTick = 72000;
     
     public InvisiPlugin()
     {
@@ -32,7 +31,7 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
         EffectListener.register();
         if(Config.bool("check-update"))
         {
-            getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 1L);
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 72000L);
             getServer().getPluginManager().registerEvents(this, this);
         }
     }
@@ -40,7 +39,11 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
     public void onDisable()
     {
         EffectListener.unregister();
-        _log.info("Disabling InvisiNOT v" + _version);
+        if(checkUpdate())
+        {
+            getServer().getScheduler().cancelTasks(this);
+        }
+        _log.info("Disabled InvisiNOT v" + _version);
     }
     
     public void reloadConfig()
@@ -53,6 +56,10 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void handlePlayerLogin(PlayerLoginEvent event)
     {
+        if(!_update)
+        {
+            return;
+        }
         Player player = event.getPlayer();
         if(player.hasPermission("invisinot.update"))
         {
@@ -62,25 +69,15 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
     
     public void run()
     {
-        tick();
-    }
-    
-    public void tick()
-    {
-        if(!_update)
+        if(checkUpdate)
         {
-            _upTick++;
-            if(_upTick >= 72000)
-            {
-                checkUpdate();
-            }
+            getServer().getScheduler().cancelTasks(this);
         }
     }
     
     public boolean checkUpdate()
     {
         _update = hasUpdate("invisinot", _version);
-        _upTick = 0;
         return _update;
     }
 }
