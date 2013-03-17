@@ -13,7 +13,7 @@ import static net.drgnome.invisinot.Global.*;
 
 public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
 {
-    private static final String _version = "1.0.0";
+    private static final String _version = "1.0.1";
     
     private boolean _update = false;
     
@@ -69,7 +69,7 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
     
     public void run()
     {
-        if(checkUpdate)
+        if(checkUpdate())
         {
             getServer().getScheduler().cancelTasks(this);
         }

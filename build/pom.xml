@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.drgnome.invisinot</groupId>
     <artifactId>InvisiNOT</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>InvisiNOT</name>
     <description>Bukkit Plugin "InvisiNOT".</description>
     <url>http://dev.bukkit.org/server-mods/invisinot/</url>
