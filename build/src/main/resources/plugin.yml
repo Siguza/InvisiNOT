@@ -1,0 +1,12 @@
+name: InvisiNOT
+main: net.siguza.invisinot.InvisiPlugin
+version: 1.1.0
+author: Siguza
+depend: [ProtocolLib]
+permissions:
+  invisinot.see:
+    default: op
+    description: "Allows you to see invisible players"
+  invisinot.update:
+    default: op
+    description: "Notifies you of new InvisiNOT versions"

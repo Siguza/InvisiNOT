@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.drgnome.invisinot</groupId>
+    <groupId>net.siguza.invisinot</groupId>
     <artifactId>InvisiNOT</artifactId>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <name>InvisiNOT</name>
     <description>Bukkit Plugin "InvisiNOT".</description>
-    <url>http://dev.bukkit.org/server-mods/invisinot/</url>
+    <url>http://dev.bukkit.org/bukkit-plugins/invisinot/</url>
     <scm>
         <url>https://github.com/Siguza/InvisiNOT</url>
         <connection>scm:git:git://github.com:Siguza/InvisiNOT.git</connection>
@@ -23,29 +23,30 @@
         <repository>
             <id>comphenix-rep</id>
             <name>Comphenix Repository</name>
-            <url>http://repo.comphenix.net/content/groups/public</url>
+            <url>http://repo.comphenix.net/content/groups/public/</url>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.5-R0.1-SNAPSHOT</version>
+            <version>1.7.5-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>2.3.0</version>
+            <version>3.3.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
         <defaultGoal>clean package</defaultGoal>
         <finalName>${project.artifactId}</finalName>
+        <sourceDirectory>${project.basedir}/src</sourceDirectory>
         <resources>
             <resource>
-                <directory>${project.basedir}/../resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
             </resource>
         </resources>
         <plugins>
@@ -54,7 +55,7 @@
                 <version>2.6</version>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
+                        <!--<id>copy-resources</id>-->
                         <phase>validate</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -72,38 +73,46 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.5</version>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <version>1.5.1</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
+                        <!--<id>replace-placeholders</id>-->
+                        <phase>process-sources</phase>
                         <goals>
-                            <goal>add-source</goal>
+                            <goal>replace</goal>
                         </goals>
                         <configuration>
-                            <sources>
-                                <source>${project.basedir}/src</source>
-                            </sources>
+                            <includes>
+                                <include>src/**/*.*</include>
+                            </includes>
+                            <replacements>
+                                <replacement>
+                                    <token>#VERSION#</token>
+                                    <value>${project.version}</value>
+                                </replacement>
+                            </replacements>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <showDeprecation>true</showDeprecation>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>prepare-package</phase>
+                        <phase>clean</phase>
                         <configuration>
                             <tasks>
                                 <delete dir="${project.basedir}/src"/>
