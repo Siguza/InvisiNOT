@@ -4,9 +4,20 @@ version: #VERSION#
 author: Siguza
 depend: [ProtocolLib]
 permissions:
+  invisinot.admin:
+    default: op
+    description: "Access to the invisinot command"
+    children:
+      invisinot.see: true
+      invisinot.update: true
   invisinot.see:
     default: op
     description: "Allows you to see invisible players"
   invisinot.update:
     default: op
     description: "Notifies you of new InvisiNOT versions"
+commands:
+  invisinot:
+    description: InvisiNOT
+    permissions: invisinot.admin
+    usage: /invisinot
