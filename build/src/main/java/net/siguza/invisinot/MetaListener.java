@@ -53,6 +53,7 @@ public class MetaListener extends PacketAdapter
                 for(int i = 0; i < mod.size(); i++)
                 {
                     Object o = mod.readSafely(i);
+                    System.out.println(i + ": " + o.getClass().getName());
                     if(o instanceof List)
                     {
                         num = i;
