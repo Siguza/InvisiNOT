@@ -1,2 +1,3 @@
 check-update: "false"
 name-prefix: ""
+prefix-nonplayers: "false"

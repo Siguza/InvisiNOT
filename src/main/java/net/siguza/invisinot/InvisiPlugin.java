@@ -37,7 +37,7 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
     {
         _log.info("Enabling InvisiNOT " + _version);
         saveDefaultConfig();
-        MetaListener.register(getConfig().getString("name-prefix"));
+        MetaListener.register(getConfig().getString("name-prefix"), getConfig().getString("prefix-nonplayers").equalsIgnoreCase("true"));
         if(getConfig().getString("check-update").equalsIgnoreCase("true"))
         {
             getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 72000L);
@@ -85,7 +85,7 @@ public class InvisiPlugin extends JavaPlugin implements Runnable, Listener
             }
             HandlerList.unregisterAll((Plugin)this);
             reloadConfig();
-            MetaListener.register(getConfig().getString("name-prefix"));
+            MetaListener.register(getConfig().getString("name-prefix"), getConfig().getString("prefix-nonplayers").equalsIgnoreCase("true"));
             if(getConfig().getString("check-update").equalsIgnoreCase("true"))
             {
                 getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0L, 72000L);

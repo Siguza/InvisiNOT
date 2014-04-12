@@ -20,12 +20,14 @@ public class MetaListener extends PacketAdapter
 {
     private static boolean _alterName;
     private static String _namePrefix;
+    private static boolean _prefixNonPlayers;
     private static HashMap<Integer, Boolean> _stateCache;
     
-    public static void register(String namePrefix)
+    public static void register(String namePrefix, boolean prefixNonPlayers)
     {
         _namePrefix = namePrefix.replace("&", new String(new char[]{ChatColor.COLOR_CHAR}));
         _alterName = namePrefix.length() > 0;
+        _prefixNonPlayers = prefixNonPlayers;
         _stateCache = _alterName ? new HashMap<Integer, Boolean>() : null;
         ArrayList<PacketType> list = new ArrayList<PacketType>();
         list.add(PacketType.Play.Server.ENTITY_METADATA);
@@ -69,7 +71,7 @@ public class MetaListener extends PacketAdapter
     
     public MetaListener(Iterable<PacketType> list)
     {
-        super(InvisiPlugin.instance(), ListenerPriority.LOWEST, list);
+        super(InvisiPlugin.instance(), ListenerPriority.HIGHEST, list);
     }
     
     public void onPacketSending(PacketEvent event)
@@ -113,6 +115,7 @@ public class MetaListener extends PacketAdapter
                     ArrayList<Player> plist = new ArrayList<Player>();
                     plist.add(player);
                     ProtocolLibrary.getProtocolManager().updateEntity(getPlayer(entityID), plist);
+                    return;
                     /*ProtocolManager manager = ProtocolLibrary.getProtocolManager();
                     Player human = getPlayer(entityID);
                     try
@@ -138,7 +141,7 @@ public class MetaListener extends PacketAdapter
             }
             ArrayList<Object> newlist = new ArrayList<Object>();
             newlist.add(new WrappedWatchableObject(0, (byte)(modifiers & 0xdf)).getHandle());
-            if(_alterName && !isPlayer)
+            if(_alterName && _prefixNonPlayers && !isPlayer)
             {
                 String name = (String)mod.readSafely(10);
                 if((name == null) || (name.length() == 0))
@@ -171,7 +174,7 @@ public class MetaListener extends PacketAdapter
                         break;
                     case 10:
                     case 11:
-                        if(_alterName && !isPlayer)
+                        if(_alterName && _prefixNonPlayers && !isPlayer)
                         {
                             break;
                         }
@@ -193,7 +196,7 @@ public class MetaListener extends PacketAdapter
     {
         public PlayerListener(Iterable<PacketType> list)
         {
-            super(InvisiPlugin.instance(), ListenerPriority.LOWEST, list);
+            super(InvisiPlugin.instance(), ListenerPriority.HIGHEST, list);
         }
         
         public void onPacketSending(PacketEvent event)
